@@ -1,6 +1,9 @@
-# SQLite to InfluxDB Script
+# Home Assistant SQLite to InfluxDB Script
 
-This script transfers data from a SQLite Home Assistantdatabase to InfluxDB. Follow the steps below to set up the environment and run the script.
+This script transfers historical data from a Home Assistant SQLite database to InfluxDB.
+It retrieves the earliest records from the InfluxDB bucket and extracts the states, attributes, and friendly names from the Home Assistant database for records prior to that.
+Created using ChatGPT and tested with Home Assistant Core 2024.10.1 and InfluxDB v2.7.10.
+Follow the steps below to set up the environment and run the script.
 
 ## Prerequisites
 
