@@ -87,19 +87,6 @@ SELECT s.state, sm.entity_id, s.last_updated_ts, sa.shared_attrs
 FROM states s
 LEFT JOIN state_attributes sa ON sa.attributes_id = s.attributes_id
 JOIN states_meta sm ON sm.metadata_id = s.metadata_id
-WHERE (sm.entity_id LIKE 'media_player%' OR
-       sm.entity_id LIKE 'input_boolean%' OR
-       sm.entity_id LIKE 'binary_sensor%' OR
-       sm.entity_id LIKE 'climate%' OR
-       sm.entity_id LIKE 'fan%' OR
-       sm.entity_id LIKE 'person%' OR
-       sm.entity_id LIKE 'sensor%' OR
-       sm.entity_id LIKE 'switch%' OR
-       sm.entity_id LIKE 'device_tracker%' OR
-       sm.entity_id LIKE 'light%' OR
-       sm.entity_id LIKE 'vacuum%' OR
-       sm.entity_id LIKE 'select%' OR
-       sm.entity_id LIKE 'cover%')
 """
 
 # Add a timestamp filter if the oldest timestamp exists in InfluxDB
@@ -142,8 +129,12 @@ def batch_insert_to_influx(rows):
             point.tag("friendly_name", friendly_name)
             point.time(last_updated_dt)
 
-            # Add all fields from shared_attrs to the point
+            # Add all fields from shared_attrs to the point, ensuring consistent types
             for key, value in attributes_json.items():
+                # Avoid field type conflicts by renaming or skipping conflicting fields
+                if key == "id":
+                    key = "id_str"  # Rename to avoid conflicts
+
                 if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
                     point.field(key, float(value))
                 else:
