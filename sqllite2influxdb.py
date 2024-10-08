@@ -114,9 +114,9 @@ def batch_insert_to_influx(write_api, rows):
             point = Point(unit_of_measurement).tag("source", "HA").tag("domain", domain)
             point.tag("entity_id", entity_id_short).tag("friendly_name", friendly_name).time(last_updated_dt)
 
-            # Insert state as either state_float or state_str
+            # Insert state as either value or state_str, based on type
             if isinstance(state, (int, float)) or (isinstance(state, str) and state.replace('.', '', 1).isdigit()):
-                point.field("state_float", float(state))
+                point.field("value", float(state))
             else:
                 point.field("state_str", str(state))
 
