@@ -112,14 +112,25 @@ def batch_insert_to_influx(write_api, rows):
                 .tag("entity_id", entity_id_short).tag("friendly_name", friendly_name).time(last_updated_dt)
 
             for key, value in attributes_json.items():
+                # Avoid field type conflicts by ensuring consistent types
                 if key in ["id", "id_str"]:
-                    # logging.warning(f"Skipping field '{key}' due to potential type conflicts.")
                     continue
 
+                existing_type_conflict = False
                 if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
-                    point.field(key, float(value))
+                    try:
+                        value = float(value)
+                        point.field(key, value)
+                    except ValueError:
+                        existing_type_conflict = True
                 else:
-                    point.field(key, str(value))
+                    try:
+                        point.field(key, str(value))
+                    except ValueError:
+                        existing_type_conflict = True
+
+                if existing_type_conflict:
+                    logging.warning(f"Skipping field '{key}' due to potential type conflicts.")
 
             points.append(point)
 
