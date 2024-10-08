@@ -1,6 +1,6 @@
 # SQLite to InfluxDB Script
 
-This script transfers data from a SQLite Home Assistant database to InfluxDB. Follow the steps below to set up the environment and run the script.
+This script transfers data from a SQLite Home Assistantdatabase to InfluxDB. Follow the steps below to set up the environment and run the script.
 
 ## Prerequisites
 
@@ -24,21 +24,15 @@ cd sqllite-2-influxdb
 Create a Python virtual environment to isolate the project dependencies.
 
 ```bash
-python -m venv venv
+python3 -m venv myenv
 ```
 
 ### Step 3: Activate the Virtual Environment
 
-Create virtual environment:
-
-```bash
-python3 -m venv myenv
-```
-
 Activate the virtual environment:
 
 ```bash
-source venv/bin/activate
+source myenv/bin/activate
 ```
 
 ### Step 4: Install Requirements
@@ -72,7 +66,7 @@ SQLITE_DB_PATH=/path/to/your/sqlite.db
 Run the script using the following command:
 
 ```bash
-python sqllite2influxdb.py
+python3 sqllite2influxdb.py
 ```
 
 Make sure that your SQLite database file is correctly specified in the `.env` file, and that your InfluxDB instance is running and accessible.
