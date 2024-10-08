@@ -131,9 +131,10 @@ def batch_insert_to_influx(rows):
 
             # Add all fields from shared_attrs to the point, ensuring consistent types
             for key, value in attributes_json.items():
-                # Avoid field type conflicts by renaming or skipping conflicting fields
-                if key == "id":
-                    key = "id_str"  # Rename to avoid conflicts
+                # Avoid field type conflicts by skipping conflicting fields
+                if key in ["id", "id_str"]:
+                    logging.warning(f"Skipping field '{key}' due to potential type conflicts.")
+                    continue
 
                 if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
                     point.field(key, float(value))
