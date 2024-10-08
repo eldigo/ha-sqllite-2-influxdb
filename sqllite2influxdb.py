@@ -26,7 +26,7 @@ if any(v is None for v in required_env_vars):
     logging.error("One or more required environment variables are not set.")
     exit(1)
 
-BATCH_SIZE = 10000
+BATCH_SIZE = int(os.getenv("BATCH_SIZE", 10000))
 
 def connect_to_sqlite(db_path):
     """Connect to the SQLite database and return the connection and cursor."""
