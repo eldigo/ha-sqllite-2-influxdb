@@ -1,6 +1,6 @@
 # SQLite to InfluxDB Script
 
-This script transfers data from a SQLite database to InfluxDB. Follow the steps below to set up the environment and run the script.
+This script transfers data from a SQLite Home Assistant database to InfluxDB. Follow the steps below to set up the environment and run the script.
 
 ## Prerequisites
 
