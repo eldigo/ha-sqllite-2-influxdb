@@ -18,8 +18,8 @@ Follow the steps below to set up the environment and run the script.
 Clone the repository or download the script files to your local machine.
 
 ```bash
-git clone https://github.com/eldigo/sqllite-2-influxdb
-cd sqllite-2-influxdb
+git clone https://github.com/eldigo/ha-sqllite-2-influxdb
+cd ha-sqllite-2-influxdb
 ```
 
 ### Step 2: Create a Virtual Environment
