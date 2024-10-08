@@ -15,8 +15,8 @@ This script transfers data from a SQLite database to InfluxDB. Follow the steps 
 Clone the repository or download the script files to your local machine.
 
 ```bash
-git clone <repository-url>
-cd <repository-directory>
+git clone https://github.com/eldigo/sqllite-2-influxdb
+cd sqllite-2-influxdb
 ```
 
 ### Step 2: Create a Virtual Environment
