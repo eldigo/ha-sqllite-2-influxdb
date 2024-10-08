@@ -113,7 +113,7 @@ def batch_insert_to_influx(write_api, rows):
 
             for key, value in attributes_json.items():
                 if key in ["id", "id_str"]:
-                    logging.warning(f"Skipping field '{key}' due to potential type conflicts.")
+                    # logging.warning(f"Skipping field '{key}' due to potential type conflicts.")
                     continue
 
                 if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
