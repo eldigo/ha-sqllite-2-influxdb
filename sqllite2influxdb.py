@@ -176,7 +176,7 @@ def main():
     finally:
         cursor.close()
         conn.close()
-        write_api.client.close()
+        write_api.close()
         logging.info("Closed connections to SQLite and InfluxDB")
 
     logging.info("Data export complete.")
