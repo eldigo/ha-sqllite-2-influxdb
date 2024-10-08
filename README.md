@@ -27,7 +27,21 @@ Create a Python virtual environment to isolate the project dependencies.
 python -m venv venv
 ```
 
-### Step 3: Install Requirements
+### Step 3: Activate the Virtual Environment
+
+Create virtual environment:
+
+```bash
+python3 -m venv myenv
+```
+
+Activate the virtual environment:
+
+```bash
+source venv/bin/activate
+```
+
+### Step 4: Install Requirements
 
 Install the required packages using the `requirements.txt` file provided.
 
@@ -35,7 +49,7 @@ Install the required packages using the `requirements.txt` file provided.
 pip install -r requirements.txt
 ```
 
-### Step 4: Configure Environment Variables
+### Step 5: Configure Environment Variables
 
 Copy the `.env.example` file to a new file named `.env` and fill in the required values. You can use the following command:
 
