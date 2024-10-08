@@ -108,29 +108,23 @@ def batch_insert_to_influx(write_api, rows):
 
         try:
             last_updated_dt = datetime.fromtimestamp(float(last_updated_ts))
-            point = Point(unit_of_measurement).tag("source", "HA").tag("domain", domain)\
-                .tag("entity_id", entity_id_short).tag("friendly_name", friendly_name).time(last_updated_dt)
+            point = Point(unit_of_measurement).tag("source", "HA").tag("domain", domain)
+            point.tag("entity_id", entity_id_short).tag("friendly_name", friendly_name).time(last_updated_dt)
 
             for key, value in attributes_json.items():
                 # Avoid field type conflicts by ensuring consistent types
                 if key in ["id", "id_str"]:
                     continue
 
-                existing_type_conflict = False
-                if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
-                    try:
+                # Check the type of value and skip if inconsistent with previous entries
+                try:
+                    if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
                         value = float(value)
                         point.field(key, value)
-                    except ValueError:
-                        existing_type_conflict = True
-                else:
-                    try:
+                    else:
                         point.field(key, str(value))
-                    except ValueError:
-                        existing_type_conflict = True
-
-                if existing_type_conflict:
-                    logging.warning(f"Skipping field '{key}' due to potential type conflicts.")
+                except Exception as e:
+                    logging.warning(f"Skipping field '{key}' for entity '{entity_id}' due to type conflict: {e}")
 
             points.append(point)
 
