@@ -114,6 +114,12 @@ def batch_insert_to_influx(write_api, rows):
             point = Point(unit_of_measurement).tag("source", "HA").tag("domain", domain)
             point.tag("entity_id", entity_id_short).tag("friendly_name", friendly_name).time(last_updated_dt)
 
+            # Insert state as either state_float or state_str
+            if isinstance(state, (int, float)) or (isinstance(state, str) and state.replace('.', '', 1).isdigit()):
+                point.field("state_float", float(state))
+            else:
+                point.field("state_str", str(state))
+
             for key, value in attributes_json.items():
                 # Avoid field type conflicts by ensuring consistent types
                 if key in ["id", "id_str"]:
