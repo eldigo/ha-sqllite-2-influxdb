@@ -87,6 +87,19 @@ SELECT s.state, sm.entity_id, s.last_updated_ts, sa.shared_attrs
 FROM states s
 LEFT JOIN state_attributes sa ON sa.attributes_id = s.attributes_id
 JOIN states_meta sm ON sm.metadata_id = s.metadata_id
+WHERE (sm.entity_id LIKE 'media_player%' OR
+       sm.entity_id LIKE 'input_boolean%' OR
+       sm.entity_id LIKE 'binary_sensor%' OR
+       sm.entity_id LIKE 'climate%' OR
+       sm.entity_id LIKE 'fan%' OR
+       sm.entity_id LIKE 'person%' OR
+       sm.entity_id LIKE 'sensor%' OR
+       sm.entity_id LIKE 'switch%' OR
+       sm.entity_id LIKE 'device_tracker%' OR
+       sm.entity_id LIKE 'light%' OR
+       sm.entity_id LIKE 'vacuum%' OR
+       sm.entity_id LIKE 'select%' OR
+       sm.entity_id LIKE 'cover%')
 """
 
 # Add a timestamp filter if the oldest timestamp exists in InfluxDB
