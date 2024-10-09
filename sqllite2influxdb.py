@@ -123,19 +123,14 @@ def batch_insert_to_influx(write_api, rows):
                 point.field("state", str(state))
 
             for key, value in attributes_json.items():
-                # Avoid field type conflicts by ensuring consistent types
-                if key in ["id", "id_str"]:
-                    continue
-
-                # Handle type conflicts by renaming fields with inconsistent types
                 try:
+                    # Attempt to cast numeric values to float, otherwise keep as string
                     if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
-                        value = float(value)
-                        point.field(key, value)
+                        point.field(key, float(value))
                     else:
-                        point.field(f"{key}", str(value))
+                        point.field(key, str(value))
                 except Exception as e:
-                    logging.warning(f"Skipping field '{key}' for entity '{entity_id}' due to type conflict: {e}")
+                    logging.warning(f"Error adding field '{key}' for entity '{entity_id}': {e}")
 
             points.append(point)
 
