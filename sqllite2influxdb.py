@@ -15,6 +15,9 @@ DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
 logging_level = logging.DEBUG if DEBUG_MODE else logging.INFO
 logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')
 
+if DEBUG_MODE:
+    logging.info("Debug mode enabled, Inserting into InfluxDB point by point")
+
 # Retrieve configuration from environment variables
 sqlite_db = os.getenv("SQLITE_DB")
 influx_url = os.getenv("INFLUXDB_URL")
