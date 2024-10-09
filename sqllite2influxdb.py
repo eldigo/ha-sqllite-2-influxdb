@@ -127,13 +127,9 @@ def batch_insert_to_influx(write_api, rows):
                 if key in ["id", "id_str"]:
                     continue
 
-                # Handle type conflicts by ensuring consistency
+                # Handle type conflicts by renaming fields with inconsistent types
                 try:
                     if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
-                        # If the field already exists as a different type, skip it to avoid conflicts
-                        if any(p.get(field_key=key) for p in points if p.get(field_key=key) and isinstance(value, str)):
-                            logging.warning(f"Skipping field '{key}' due to type conflict with existing points.")
-                            continue
                         value = float(value)
                         point.field(key, value)
                     else:
