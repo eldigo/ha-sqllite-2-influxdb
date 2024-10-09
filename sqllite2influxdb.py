@@ -127,15 +127,18 @@ def batch_insert_to_influx(write_api, rows):
                 if key in ["id", "id_str"]:
                     continue
 
-                # Handle type conflicts by renaming fields with inconsistent types
+                # Handle type conflicts by ensuring consistent types, particularly for temperature
                 try:
-                    if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
+                    if key == "temperature":
+                        value = float(value) #if value is not None else 0.0  # Ensure temperature is always a float, default to 0.0 if None
+                        point.field(key, value)
+                    elif isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
                         value = float(value)
                         point.field(key, value)
                     else:
                         point.field(f"{key}", str(value))
                 except Exception as e:
-                    logging.warning(f"Skipping field '{key}' for entity '{entity_id}' due to type conflict: {e}")
+                    logging.warning(f"Skipping field '{key}' for entity '{entity_id}' with value '{value}' due to type conflict: {e}")
 
             points.append(point)
 
