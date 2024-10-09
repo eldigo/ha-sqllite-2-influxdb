@@ -100,6 +100,8 @@ def batch_insert_to_influx(write_api, rows):
     points = []
     for row in rows:
         state, entity_id, last_updated_ts, shared_attrs = row
+        if state in ["unknown", "unavailable"]:
+            continue
         attributes_json = parse_attributes(shared_attrs)
 
         friendly_name = attributes_json.get('friendly_name', 'Unknown')
