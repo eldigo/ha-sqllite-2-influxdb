@@ -175,14 +175,14 @@ def main():
     try:
         # Execute the SQLite query and process rows in batches
         cursor.execute(sqlite_query)
-        total_rows = cursor.fetchall()
-        logging.info(f"Processing {len(total_rows)} rows.")
         rows_fetched = 0
-        while rows_fetched < len(total_rows):
-            rows = total_rows[rows_fetched:rows_fetched + BATCH_SIZE]
-            rows_fetched += len(rows)
-            logging.info(f"Fetched {len(rows)} rows from SQLite (Total fetched so far: {rows_fetched})")
+        while True:
+            rows = cursor.fetchmany(BATCH_SIZE)
+            if not rows:
+                break
             batch_insert_to_influx(write_api, rows)
+            rows_fetched += len(rows)
+            # logging.info(f"Processed {rows_fetched} rows so far.")
     except sqlite3.Error as e:
         logging.error(f"SQLite query error: {e}")
     finally:
