@@ -169,8 +169,7 @@ def main():
                 break
             batch_insert_to_influx(write_api, rows)
             rows_fetched += len(rows)
-            if DEBUG_MODE:
-                logging.info(f"Processed {rows_fetched} rows so far.")
+            logging.info(f"Processed {rows_fetched} rows so far.")
     except sqlite3.Error as e:
         logging.error(f"SQLite query error: {e}")
     finally:
