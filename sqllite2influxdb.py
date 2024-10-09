@@ -174,8 +174,10 @@ def main():
 
     try:
         # Execute the SQLite query and process rows in batches
+        logging.info(f"Fetching Data from SQLite.")
         cursor.execute(sqlite_query)
         rows_fetched = 0
+        logging.info(f"Started Processing Data from SQLite.")
         while True:
             rows = cursor.fetchmany(BATCH_SIZE)
             if not rows:
