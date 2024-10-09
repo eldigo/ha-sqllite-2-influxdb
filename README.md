@@ -62,7 +62,10 @@ INFLUXDB_TOKEN=your_token
 INFLUXDB_ORG=your_organization
 INFLUXDB_BUCKET=your_bucket
 SQLITE_DB_PATH=/path/to/your/sqlite.db
+DEBUG_MODE=false
 ```
+
+When DEBUG_MODE is true. The script will insert into Influx point by point
 
 ## Usage
 
