@@ -167,6 +167,7 @@ def main():
     logging.info(f"Final SQLite query: {sqlite_query}")
 
     try:
+        logging.info(f"Started Processing...")
         cursor.execute(sqlite_query)
         rows_fetched = 0
         while True:
@@ -175,7 +176,7 @@ def main():
                 break
             batch_insert_to_influx(write_api, rows)
             rows_fetched += len(rows)
-            logging.info(f"Processed {rows_fetched} rows so far.")
+            # logging.info(f"Processed {rows_fetched} rows so far.")
     except sqlite3.Error as e:
         logging.error(f"SQLite query error: {e}")
     finally:
