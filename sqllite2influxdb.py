@@ -124,15 +124,14 @@ def batch_insert_to_influx(write_api, rows):
 
             for key, value in attributes_json.items():
                 # Avoid field type conflicts by ensuring consistent types
-                if key in ["id", "id_str", "update_available"] or value is None:
+                if key in ["id", "id_str", "update_available"]:
                     continue
 
-                # Handle type conflicts by ensuring consistent types, particularly for numerical fields
+                # Handle type conflicts by ensuring consistent types, particularly for temperature
                 try:
                     if key == "temperature":
-                        value = float(value) if isinstance(value, (int, float, str)) and value.replace('.', '', 1).isdigit() else None
-                        if value is not None:
-                            point.field(key, value)
+                        value = float(value) #if value is not None else 0.0  # Ensure temperature is always a float, default to 0.0 if None
+                        point.field(key, value)
                     elif isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
                         value = float(value)
                         point.field(key, value)
@@ -151,7 +150,7 @@ def batch_insert_to_influx(write_api, rows):
             write_api.write(bucket=influx_bucket, org=influx_org, record=points)
             logging.info(f"Successfully wrote {len(points)} points to InfluxDB")
         except Exception as e:
-            logging.error(f"Error writing points to InfluxDB: {e}, {points}")
+            logging.error(f"Error writing points to InfluxDB: {e}")
     else:
         logging.info("No points to write in this batch.")
 
