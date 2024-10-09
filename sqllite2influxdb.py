@@ -127,14 +127,8 @@ def batch_insert_to_influx(write_api, rows):
                     # Attempt to cast numeric values to float, otherwise keep as string
                     if isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
                         value = float(value)
-                        if point.has_field(key):
-                            logging.warning(f"Skipping field '{key}' for entity '{entity_id}' due to type conflict.")
-                            continue
                         point.field(key, value)
                     else:
-                        if point.has_field(key):
-                            logging.warning(f"Skipping field '{key}' for entity '{entity_id}' due to type conflict.")
-                            continue
                         point.field(key, str(value))
                 except Exception as e:
                     logging.warning(f"Error adding field '{key}' for entity '{entity_id}': {e}")
