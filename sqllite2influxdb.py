@@ -102,11 +102,11 @@ def batch_insert_to_influx(write_api, rows):
         state, entity_id, last_updated_ts, shared_attrs = row
         if state in ["unknown", "unavailable"]:
             continue
+        domain, _, entity_id_short = entity_id.partition('.')
         attributes_json = parse_attributes(shared_attrs)
 
-        friendly_name = attributes_json.get('friendly_name', 'Unknown')
+        friendly_name = attributes_json.get('friendly_name', entity_id_short)
         unit_of_measurement = attributes_json.get('unit_of_measurement', 'default_measurement')
-        domain, _, entity_id_short = entity_id.partition('.')
 
         if not unit_of_measurement:
             unit_of_measurement = 'default_measurement'
