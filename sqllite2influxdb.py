@@ -11,6 +11,8 @@ import os
 load_dotenv()
 
 # Setup logging
+DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
+logging_level = logging.DEBUG if DEBUG_MODE else logging.INFO
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Retrieve configuration from environment variables
@@ -146,11 +148,21 @@ def batch_insert_to_influx(write_api, rows):
             logging.warning(f"Error preparing InfluxDB point for entity {entity_id}: {e}")
 
     if points:
-        try:
-            write_api.write(bucket=influx_bucket, org=influx_org, record=points)
-            logging.info(f"Successfully wrote {len(points)} points to InfluxDB")
-        except Exception as e:
-            logging.error(f"Error writing points to InfluxDB: {e}")
+        if DEBUG_MODE:
+            # Write single point to InfluxDB
+            for point in points:
+                try:
+                    write_api.write(bucket=influx_bucket, org=influx_org, record=point)
+                    # logging.info(f"Successfully wrote point to InfluxDB: {point}")
+                except Exception as e:
+                    logging.error(f"Error writing point to InfluxDB: {e}. Point: {point}")
+        else:
+            # Write points as batche to InfluxDB
+            try:
+                write_api.write(bucket=influx_bucket, org=influx_org, record=points)
+                logging.info(f"Successfully wrote {len(points)} points to InfluxDB")
+            except Exception as e:
+                logging.error(f"Error writing points to InfluxDB: {e}")
     else:
         logging.info("No points to write in this batch.")
 
