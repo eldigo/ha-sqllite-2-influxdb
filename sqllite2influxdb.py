@@ -151,7 +151,7 @@ def batch_insert_to_influx(write_api, rows):
             write_api.write(bucket=influx_bucket, org=influx_org, record=points)
             logging.info(f"Successfully wrote {len(points)} points to InfluxDB")
         except Exception as e:
-            logging.error(f"Error writing points to InfluxDB: {e}")
+            logging.error(f"Error writing points to InfluxDB: {e}, {points}")
     else:
         logging.info("No points to write in this batch.")
 
