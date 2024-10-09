@@ -124,14 +124,12 @@ def batch_insert_to_influx(write_api, rows):
 
             for key, value in attributes_json.items():
                 # Avoid field type conflicts by ensuring consistent types
-                if key in ["id", "id_str"] or value is None:
+                if key in ["id", "id_str", "update_available"] or value is None:
                     continue
 
                 # Handle type conflicts by ensuring consistent types, particularly for numerical fields
                 try:
-                    if key == "update_available":
-                        point.field(key, str(value))  # Always handle update_available as a string
-                    elif key == "temperature":
+                    if key == "temperature":
                         value = float(value) if isinstance(value, (int, float, str)) and value.replace('.', '', 1).isdigit() else None
                         if value is not None:
                             point.field(key, value)
