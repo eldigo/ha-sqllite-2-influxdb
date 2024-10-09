@@ -129,8 +129,8 @@ def batch_insert_to_influx(write_api, rows):
 
                 # Handle type conflicts by ensuring consistent types, particularly for temperature
                 try:
-                    if key == "temperature":
-                        value = float(value) #if value is not None else 0.0  # Ensure temperature is always a float, default to 0.0 if None
+                    if key in ["temperature", "humidity"]:
+                        value = float(value)  # Ensure value is always a float
                         point.field(key, value)
                     elif isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
                         value = float(value)
