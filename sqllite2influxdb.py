@@ -15,9 +15,6 @@ DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
 logging_level = logging.DEBUG if DEBUG_MODE else logging.INFO
 logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')
 
-if DEBUG_MODE:
-    logging.info("Debug mode enabled, Inserting into InfluxDB point by point")
-
 # Retrieve configuration from environment variables
 sqlite_db = os.getenv("SQLITE_DB")
 influx_url = os.getenv("INFLUXDB_URL")
@@ -104,7 +101,7 @@ def batch_insert_to_influx(write_api, rows):
     points = []
     for row in rows:
         state, entity_id, last_updated_ts, shared_attrs = row
-        if state in ["unknown", "unavailable"]:
+        if state in ["unknown", "unavailable", "None"]:
             continue
         domain, _, entity_id_short = entity_id.partition('.')
         attributes_json = parse_attributes(shared_attrs)
@@ -112,6 +109,8 @@ def batch_insert_to_influx(write_api, rows):
         friendly_name = attributes_json.get('friendly_name', entity_id_short)
         unit_of_measurement = attributes_json.get('unit_of_measurement', 'default_measurement')
 
+        if unit_of_measurement == '':
+            unit_of_measurement = 'count'
         try:
             # Convert timestamp from Unix epoch to datetime object
             last_updated_dt = datetime.fromtimestamp(float(last_updated_ts))
@@ -130,7 +129,7 @@ def batch_insert_to_influx(write_api, rows):
                 if key in ["id", "id_str", "update_available"]:
                     continue
                 try:
-                    if key in ["temperature", "humidity"]:
+                    if key in ["temperature", "humidity", "voc", "formaldehyd", "co2", "linkquality"]:
                         point.field(key, float(value))
                     elif isinstance(value, (int, float)) or (isinstance(value, str) and value.replace('.', '', 1).isdigit()):
                         point.field(key, float(value))
@@ -142,7 +141,7 @@ def batch_insert_to_influx(write_api, rows):
             points.append(point)
 
         except ValueError as e:
-            logging.warning(f"Error preparing InfluxDB point for entity {entity_id}: {e}")
+            logging.warning(f"Error preparing InfluxDB point for entity {entity_id}: {e}, row: {row}")
 
     if points:
         # Write points to InfluxDB, writing each point individually in DEBUG mode
